@@ -1,0 +1,42 @@
+[
+  {
+    "id": "01",
+    "label": "Sample 01 \u2014 Frontal Lobe High-Grade Glioma",
+    "preview": "sample_01_preview.png",
+    "patient": "Synthetic_01",
+    "slice_idx": 80,
+    "tumor_pixels": 1785
+  },
+  {
+    "id": "02",
+    "label": "Sample 02 \u2014 Parietal Glioblastoma (Multifocal/Ring)",
+    "preview": "sample_02_preview.png",
+    "patient": "Synthetic_02",
+    "slice_idx": 80,
+    "tumor_pixels": 2508
+  },
+  {
+    "id": "03",
+    "label": "Sample 03 \u2014 Temporal Astrocytoma (Edema Dominant)",
+    "preview": "sample_03_preview.png",
+    "patient": "Synthetic_03",
+    "slice_idx": 80,
+    "tumor_pixels": 2036
+  },
+  {
+    "id": "04",
+    "label": "Sample 04 \u2014 Occipital Mass (Solid Enhancing Core)",
+    "preview": "sample_04_preview.png",
+    "patient": "Synthetic_04",
+    "slice_idx": 80,
+    "tumor_pixels": 1255
+  },
+  {
+    "id": "05",
+    "label": "Sample 05 \u2014 Deep Periventricular Glioma",
+    "preview": "sample_05_preview.png",
+    "patient": "Synthetic_05",
+    "slice_idx": 80,
+    "tumor_pixels": 1539
+  }
+]
