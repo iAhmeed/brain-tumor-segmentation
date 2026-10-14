@@ -3,7 +3,7 @@
  * Fast, reactive multi-layer canvas rendering and API integration
  */
 
-const API_BASE = window.location.origin.includes('8000')
+const API_BASE = window.location.protocol.startsWith('http')
   ? window.location.origin
   : 'http://127.0.0.1:8000';
 
