@@ -84,10 +84,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount frontend directory if it exists
-frontend_dir = BASE_DIR / "frontend"
-if frontend_dir.exists():
-    app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
 
 
 def ensure_model_loaded():
@@ -304,3 +300,9 @@ async def predict_unified_upload(
         status_code=400,
         detail="Invalid upload. Provide either 'input_npy' or all 4 NIfTI files ('t1', 't1ce', 't2', 'flair').",
     )
+
+
+# Mount frontend directory for SPA serving (must be mounted after API routes)
+frontend_dir = BASE_DIR / "frontend"
+if frontend_dir.exists():
+    app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
