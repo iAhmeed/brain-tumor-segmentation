@@ -417,6 +417,12 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 240, 255, 0.1);
 }
 
+.sample-card:focus-visible {
+  outline: 2px solid var(--primary-cyan);
+  outline-offset: 2px;
+  border-color: var(--primary-cyan);
+}
+
 .sample-card.active {
   border-color: var(--primary-cyan);
   background: rgba(0, 240, 255, 0.05);

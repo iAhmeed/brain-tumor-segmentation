@@ -199,6 +199,10 @@ function renderSampleCards(samples) {
   DOM.gallery.innerHTML = samples.map((sample) => `
     <div class="sample-card ${state.currentSampleId === sample.id ? 'active' : ''}" 
          id="sample-card-${sample.id}" 
+         tabindex="0"
+         role="button"
+         aria-label="Select ${sample.label}"
+         onkeydown="if(event.key === 'Enter' || event.key === ' ') { selectSample('${sample.id}'); event.preventDefault(); }"
          onclick="selectSample('${sample.id}')">
       <div class="sample-img-container">
         <img class="sample-thumb" src="${API_BASE}${sample.preview_url}" alt="${sample.label}" loading="lazy">
