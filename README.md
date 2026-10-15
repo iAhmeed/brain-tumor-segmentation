@@ -1,84 +1,84 @@
-# 🧠 NeuroSegment AI — Brain Tumor Segmentation
+# Brain Tumor Segmentation
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Dataset](https://img.shields.io/badge/Dataset-BraTS%202020-blue.svg)](https://www.med.upenn.edu/cbica/brats2020/)
-[![Model](https://img.shields.io/badge/Model-U--Net%20(ResNet34)-6366F1.svg)](#model-architecture)
+[![Dataset](<https://img.shields.io/badge/Dataset-BraTS%202020-blue.svg>)](https://www.med.upenn.edu/cbica/brats2020/)
+[![Model](<https://img.shields.io/badge/Model-U--Net%20(ResNet34)-6366F1.svg>)](#model-details--performance)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A full-stack deep learning web application for **automated multi-modal brain tumor segmentation** trained on the **BraTS 2020 (MICCAI)** dataset. Built with **PyTorch**, **FastAPI**, and a **custom glassmorphic dark-theme diagnostic console** featuring interactive canvas overlays, real-time opacity controls, and Sørensen–Dice evaluation.
+> **⚠️ Research and educational use only. Not a medical device and not validated for clinical use.**
+
+A full-stack deep learning web application for automated multi-modal brain tumor segmentation trained on the **BraTS 2020 (MICCAI)** dataset. Built with **PyTorch**, **FastAPI**, and a custom dark-theme web UI featuring interactive canvas overlays, real-time opacity controls, and Sørensen–Dice evaluation.
 
 ---
 
-## ✨ Features
+## Web UI
 
-- **⚡ Zero-Setup Instant Demo:** Ships with pre-extracted clinical sample cases (`demo_samples/`) ready for single-click neural inference — no external datasets or downloads required.
-- **🔬 Multi-Region Tumor Segmentation:** Simultaneously segments all three BraTS clinical sub-regions:
-  - **Whole Tumor (WT):** Complete disease extent including edema and core.
-  - **Tumor Core (TC):** Surgical resection target (necrotic center + active tumor).
-  - **Enhancing Tumor (ET):** Active contrast-absorbing glioma cells.
-- **🎨 Interactive Diagnostic Canvas:** High-resolution slice viewport with:
-  - Individual sub-region layer visibility toggles (`WT`, `TC`, `ET`).
-  - Real-time client-side opacity slider ($0\% - 100\%$) for anatomic correlation.
-  - High-resolution composite PNG export.
-- **📊 Quantitative Dice Analytics:** Live calculation of Sørensen–Dice similarity coefficients against ground-truth segmentations with animated visual progress bars and voxel volume statistics.
-- **📁 Advanced Researcher Mode:**
-  - **4-Channel NIfTI Upload:** Ingests raw `.nii` / `.nii.gz` scans (`T1`, `T1ce`, `T2`, `FLAIR` + optional `_seg`), automatically extracts the optimal axial slice, and normalizes volumes.
-  - **Preprocessed Array Upload:** Ingests `.npy` 4-channel tensor slices (`[4, 192, 192]`).
-- **🚀 Unified Architecture:** FastAPI serves both the REST API and the single-page application from a single lightweight server.
+![1792095323141](image/README/1792095323141.png)
 
 ---
 
-## 🏗️ System Architecture
+## Features
+
+- **Demo samples:** Ships with pre-extracted sample cases (`demo_samples/`) ready for single-click inference — no external datasets required.
+- **Multi-region segmentation:** Simultaneously segments all three BraTS sub-regions — Whole Tumor (WT), Tumor Core (TC), and Enhancing Tumor (ET).
+- **Interactive canvas:** Slice viewport with per-region layer toggles, opacity slider, and PNG export.
+- **Dice evaluation:** Sørensen–Dice scores against ground-truth segmentations (shown only when a ground-truth mask is available).
+- **NIfTI upload:** Ingests raw `.nii` / `.nii.gz` scans (T1, T1ce, T2, FLAIR + optional seg), extracts the optimal axial slice, and applies z-score normalization.
+- **Array upload:** Ingests preprocessed `.npy` 4-channel tensor slices `[4, 192, 192]`.
+
+---
+
+## Project Structure
 
 ```
 brain-tumor-segmentation/
 ├── ckpt/
 │   ├── best.pth                    # Trained U-Net model weights (state dict)
 │   └── last.pth
-├── demo_samples/                   # Bundled clinical samples for instant demo
+├── demo_samples/                   # Bundled sample cases for demo
 │   ├── manifest.json               # Catalog of cases with tumor metadata
 │   ├── sample_01_input.npy         # 4-channel float32 slice [4, 192, 192]
 │   ├── sample_01_gt.npy            # 3-channel ground truth [3, 192, 192]
 │   ├── sample_01_preview.png       # Grayscale thumbnail for gallery
 │   └── ...
-├── app/                            # Backend FastAPI Service
+├── app/                            # Backend (FastAPI)
 │   ├── __init__.py
 │   ├── model.py                    # U-Net architecture & checkpoint loader
 │   ├── inference.py                # Forward pass & Sørensen-Dice engine
 │   ├── preprocess.py               # NIfTI & NPY z-score normalization
 │   ├── main.py                     # FastAPI REST API endpoints
 │   └── requirements.txt            # Python dependencies
-├── frontend/                       # Web Client (Vanilla HTML/CSS/JS)
-│   ├── index.html                  # Diagnostic console layout
-│   ├── style.css                   # Glassmorphic dark theme & animations
-│   └── app.js                      # Canvas rendering & API bridge
+├── frontend/                       # Web client (Vanilla HTML/CSS/JS)
+│   ├── index.html
+│   ├── style.css
+│   └── app.js
 ├── scripts/
 │   └── extract_demo_samples.py     # Sample extractor & synthetic case generator
-├── training_curves.png             # Training loss and Dice score history
+├── training_curves.png
 └── README.md
 ```
 
 ---
 
-## 🧠 Medical Imaging & Tumor Nomenclature
+## Medical Imaging & Tumor Nomenclature
 
-The application ingests **four co-registered MRI sequences** conforming to standard neuro-oncology diagnostic protocols:
+The model ingests **four co-registered MRI sequences**:
 
-| Modality | Description | Clinical Utility |
-|---|---|---|
-| **T1** | T1-weighted spin-echo | Anatomic baseline, tissue boundaries, CSF hypointense |
-| **T1ce** | T1-weighted contrast-enhanced | Highlights disrupted blood-brain barrier & active vascular tumor cells |
-| **T2** | T2-weighted spin-echo | Highlights edema, fluid accumulation, CSF hyperintense |
-| **FLAIR** | Fluid-Attenuated Inversion Recovery | Suppresses CSF signal, hyper-delineates peritumoral vasogenic edema |
+| Modality        | Description                         | Role                                                     |
+| --------------- | ----------------------------------- | -------------------------------------------------------- |
+| **T1**    | T1-weighted spin-echo               | Anatomic baseline, tissue boundaries                     |
+| **T1ce**  | T1-weighted contrast-enhanced       | Highlights blood-brain barrier disruption & active tumor |
+| **T2**    | T2-weighted spin-echo               | Highlights edema and fluid accumulation                  |
+| **FLAIR** | Fluid-Attenuated Inversion Recovery | Suppresses CSF, delineates peritumoral edema             |
 
-### Tumor Sub-Compartment Segmentation
+### Tumor Sub-Region Hierarchy
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│  Whole Tumor (WT): Red / Coral (#FF5353)               │
+│  Whole Tumor (WT): Red (#FF5353)                       │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │  Tumor Core (TC): Green / Emerald (#10B981)      │  │
+│  │  Tumor Core (TC): Green (#10B981)                │  │
 │  │  ┌────────────────────────────────────────────┐  │  │
 │  │  │  Enhancing Tumor (ET): Cyan (#00D2FF)     │  │  │
 │  │  └────────────────────────────────────────────┘  │  │
@@ -86,39 +86,61 @@ The application ingests **four co-registered MRI sequences** conforming to stand
 └────────────────────────────────────────────────────────┘
 ```
 
-- **Whole Tumor (WT):** BraTS labels `1 + 2 + 3` (Necrosis + Edema + Enhancing).
-- **Tumor Core (TC):** BraTS labels `1 + 3` (Necrosis + Enhancing).
-- **Enhancing Tumor (ET):** BraTS label `3` (Active Gd-DTPA enhancing core).
+- **Whole Tumor (WT):** BraTS labels `1 + 2 + 3` (original BraTS label 4 is remapped to 3).
+- **Tumor Core (TC):** BraTS labels `1 + 3`.
+- **Enhancing Tumor (ET):** BraTS label `3`.
 
 ---
 
-## 🔬 Model Details & Performance
+## Model Details & Performance
 
-- **Architecture:** U-Net with a pre-trained **ResNet-34** encoder backbone (`segmentation-models-pytorch`).
-- **Input Dimensions:** `[Batch, 4, 192, 192]` (axial slices, non-zero voxel z-score normalized).
-- **Output Channels:** 3 independent sigmoid logits (WT, TC, ET) with a `0.5` decision threshold.
-- **Loss Function:** Combined Soft Dice Loss + Binary Cross-Entropy (BCE).
+- **Architecture:** U-Net with a **ResNet-34 encoder trained from scratch** (`segmentation-models-pytorch`, `encoder_weights=None`).
+- **Input:** `[Batch, 4, 192, 192]` — axial slices, z-score normalized on non-zero voxels.
+- **Output:** 3 independent sigmoid outputs (WT, TC, ET), threshold 0.5.
+- **Loss:** Soft Dice Loss + Binary Cross-Entropy (BCE).
 
-### Validation Results
+### Validation Results (patient-level split, 74 patients)
 
-| Tumor Compartment | Validation Dice | Representative Slice Dice |
-|---|:---:|:---:|
-| **Whole Tumor (WT)** | **0.880** | **0.978 - 0.987** |
-| **Tumor Core (TC)** | **0.723** | **0.682 - 0.834** |
-| **Enhancing Tumor (ET)** | **0.705** | **0.952 - 0.980** |
-| **Mean Composite** | **0.769** | **0.880 - 0.923** |
+| Tumor Region         | Validation Dice |
+| -------------------- | :-------------: |
+| Whole Tumor (WT)     |      0.880      |
+| Tumor Core (TC)      |      0.723      |
+| Enhancing Tumor (ET) |      0.705      |
+| **Mean**       | **0.769** |
+
+> These scores are computed on 2D axial slices containing tumor pixels, not on 3D volumes, so they are not directly comparable to BraTS leaderboard scores.
 
 ![Training Curves](training_curves.png)
 
 ---
 
-## ⚡ Quickstart & Running Locally
+## Training Details
 
-### 1. Prerequisites
-- Python 3.10+ (tested on Python 3.10, 3.11, 3.12, 3.13, 3.14)
-- CPU or CUDA-capable GPU (detected automatically)
+- **Data:** BraTS 2020 training set, 368 patients (1 excluded: non-standard segmentation filename); patient-level split — 294 train / 74 val (seed 42).
+- **Preprocessing:** Per-volume z-score normalization on non-zero voxels, 192×192 center crop, axial slices with ≥100 tumor pixels retained.
+- **Model:** U-Net, ResNet-34 encoder trained from scratch (24.4M params), 4 input channels, 3 sigmoid outputs.
+- **Training:** AdamW (lr 1e-4), cosine LR schedule, batch size 16, mixed precision (AMP), Dice + BCE loss, Kaggle GPU; best checkpoint selected at epoch 5 by validation Dice.
+- **Notebook:** [brain-tumor-segmentation.ipynb](brain-tumor-segmentation.ipynb)
 
-### 2. Installation
+---
+
+## Limitations
+
+- Dice is computed on 2D slices that contain tumor (192×192 crop), not per-patient 3D volumes, so it is not comparable to official BraTS leaderboard scores.
+- The best checkpoint (epoch 5) was selected on the same validation set used for reporting; there is no separate held-out test set.
+- The model tends to overfit after ~5–10 epochs (no data augmentation was applied).
+- The app segments a single representative axial slice, not the full 3D volume.
+
+---
+
+## Quickstart
+
+### Prerequisites
+
+- Python 3.10 (tested on Python 3.10)
+- CPU or CUDA GPU (detected automatically)
+
+### Installation
 
 ```bash
 # Clone the repository
@@ -129,33 +151,31 @@ cd brain-tumor-segmentation
 pip install -r app/requirements.txt
 ```
 
-### 3. Start the Web Application
+### Run the Web App
 
 ```bash
-# Start FastAPI with Uvicorn
 python -m uvicorn app.main:app --reload --port 8000
 ```
 
-Open your browser and navigate to:
-👉 **[http://localhost:8000](http://localhost:8000)**
+Open [http://localhost:8000](http://localhost:8000) in your browser.
 
-*(Interactive Swagger API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs))*
+Swagger API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 🔌 REST API Documentation
+## REST API
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/health` | System diagnostics, hardware device (`cpu`/`cuda`), and model status |
-| `GET` | `/samples` | Catalog of pre-bundled clinical demo cases |
-| `GET` | `/samples/{id}/preview` | Returns grayscale PNG thumbnail of the axial slice |
-| `POST` | `/predict/sample/{id}` | Runs segmentation on a bundled case; returns masks & Dice scores |
-| `POST` | `/predict/upload-npy` | Upload preprocessed `.npy` array (`[4, 192, 192]`) + optional ground truth |
-| `POST` | `/predict/upload-nii` | Multi-file upload of 4 NIfTI volumes (`t1`, `t1ce`, `t2`, `flair`, optional `seg`) |
-| `POST` | `/predict/upload` | Unified endpoint dynamically routing either `.npy` or NIfTI inputs |
+| Method   | Endpoint                  | Description                                                                     |
+| -------- | ------------------------- | ------------------------------------------------------------------------------- |
+| `GET`  | `/health`               | Server status, device info, model status                                        |
+| `GET`  | `/samples`              | List bundled demo cases                                                         |
+| `GET`  | `/samples/{id}/preview` | Grayscale PNG thumbnail                                                         |
+| `POST` | `/predict/sample/{id}`  | Run segmentation on a bundled case                                              |
+| `POST` | `/predict/upload-npy`   | Upload `.npy` array `[4, 192, 192]` + optional ground truth                 |
+| `POST` | `/predict/upload-nii`   | Upload 4 NIfTI volumes (`t1`, `t1ce`, `t2`, `flair`) + optional `seg` |
+| `POST` | `/predict/upload`       | Unified endpoint routing `.npy` or NIfTI inputs                               |
 
-### Example Prediction Response Schema
+### Example Prediction Response
 
 ```json
 {
@@ -163,9 +183,9 @@ Open your browser and navigate to:
   "width": 192,
   "height": 192,
   "masks": {
-    "WT": [[0, 0, 1, ...], ...],
-    "TC": [[0, 0, 0, ...], ...],
-    "ET": [[0, 0, 0, ...], ...]
+    "WT": [[0, 0, 1, "..."], "..."],
+    "TC": [[0, 0, 0, "..."], "..."],
+    "ET": [[0, 0, 0, "..."], "..."]
   },
   "dice": {
     "WT": 0.9800,
@@ -177,29 +197,29 @@ Open your browser and navigate to:
 }
 ```
 
+> `dice` values are `null` when no ground-truth segmentation is provided.
+
 ---
 
-## 🛠️ Extracting / Regenerating Demo Samples
-
-If you have access to the raw BraTS training cache (e.g. from Kaggle), you can extract additional custom cases:
+## Extracting / Regenerating Demo Samples
 
 ```bash
 # Extract from BraTS cache directory
 python scripts/extract_demo_samples.py --cache /path/to/brats_cache --output demo_samples --count 5
 
-# Or generate synthetic benchmark cases without external dataset
+# Generate synthetic test cases without external data
 python scripts/extract_demo_samples.py --synthetic --output demo_samples --count 5
 ```
 
 ---
 
-## 📜 Citation & Acknowledgements
+## Citation & Acknowledgements
 
 - **BraTS 2020:** B. H. Menze, A. Jakab, S. Bauer, et al., *"The Multimodal Brain Tumor Image Segmentation Benchmark (BRATS)"*, IEEE Transactions on Medical Imaging, 2015.
 - **Segmentation Models PyTorch:** Pavel Iakubovskii, [segmentation_models.pytorch](https://github.com/qubvel/segmentation_models.pytorch).
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
